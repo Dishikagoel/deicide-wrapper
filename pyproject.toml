@@ -1,0 +1,28 @@
+[project]
+name = "deicide-wrapper"
+version = "0.1.0"
+description = "Unified runner for NeoDepends + Deicide"
+readme = "README.md"
+authors = [
+    { name = "Dishika Goel" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "deicide>=0.1.0",
+]
+
+# Expose the CLI: `deicide-tool`
+[project.scripts]
+deicide-tool = "deicide_wrapper.cli.main:main"
+
+# Include resources in the package
+[tool.setuptools]
+packages = ["deicide_wrapper", "deicide_wrapper.cli"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+deicide_wrapper = ["resources/*"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
