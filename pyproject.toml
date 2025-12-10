@@ -3,21 +3,26 @@ name = "deicide-wrapper"
 version = "0.1.0"
 description = "Unified runner for NeoDepends + Deicide"
 readme = "README.md"
-authors = [
-    { name = "Dishika Goel" }
-]
+authors = [{ name = "Dishika Goel" }]
 requires-python = ">=3.11"
+
 dependencies = [
-    "deicide>=0.1.0",
+    "click>=8.2.1",
+    "nltk>=3.9.1",
+    "ortools>=9.14.6206",
+    "numpy>=2.0.0",
+    "ordered-set>=4.1.0",
 ]
 
-# Expose the CLI: `deicide-tool`
 [project.scripts]
 deicide-tool = "deicide_wrapper.cli.main:main"
 
-# Include resources in the package
 [tool.setuptools]
-packages = ["deicide_wrapper", "deicide_wrapper.cli"]
+packages = [
+    "deicide_wrapper",
+    "deicide_wrapper.cli",
+    "deicide"
+]
 include-package-data = true
 
 [tool.setuptools.package-data]
