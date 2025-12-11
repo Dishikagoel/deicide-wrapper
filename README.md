@@ -2,7 +2,7 @@
 
 Unified wrapper for running **NeoDepends** + **Deicide** in a single, streamlined workflow.
 
-`deicide-tool` automatically extracts dependency information from Java source projects using **NeoDepends**, then runs **Deicide** to generate architecture-aware clustering and DV8-compatible analysis artifacts.
+`deicide-tool` automatically extracts dependency information from source projects using **NeoDepends**, then runs **Deicide** to generate architecture-aware clustering and DV8-compatible analysis artifacts. Supports multiple programming languages including Java, Python, JavaScript, TypeScript, C/C++, Go, Kotlin, and Ruby.
 
 ---
 
@@ -53,13 +53,33 @@ deicide-tool
 
 ## 🧪 Usage
 
-### Basic example
+### Basic example (Java - default)
 
 ```bash
 deicide-tool \
   --project "/path/to/project" \
   --output-dir wrapper_output \
   --filename src/Test.java
+```
+
+### Analyze a Python project
+
+```bash
+deicide-tool \
+  --project "/path/to/python-project" \
+  --output-dir wrapper_output \
+  --filename src/main.py \
+  --language python
+```
+
+### Analyze a JavaScript/TypeScript project
+
+```bash
+deicide-tool \
+  --project "/path/to/js-project" \
+  --output-dir wrapper_output \
+  --filename src/index.js \
+  --language javascript
 ```
 
 ### Generate DV8-compatible outputs
@@ -71,6 +91,10 @@ deicide-tool \
   --filename src/Test.java \
   --dv8
 ```
+
+### Supported Languages
+
+The `--language` (or `--lang`) flag accepts: `c`, `cpp`, `go`, `java` (default), `javascript`, `kotlin`, `python`, `ruby`, `typescript`
 
 ---
 
@@ -92,7 +116,7 @@ All files are placed inside the specified `output-dir`.
 ## 🧩 How It Works
 
 ### **Step 1 — NeoDepends**
-Parses Java files, resolves bindings, builds dependency matrices, and outputs a `.db` file.
+Parses source files for the specified language, resolves bindings, builds dependency matrices, and outputs a `.db` file.
 
 ### **Step 2 — Deicide**
 Consumes the `.db` file and performs clustering + architecture analysis on the specified filename.

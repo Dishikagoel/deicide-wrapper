@@ -17,7 +17,7 @@ def resource_path(filename):
 # ------------------------------------------------
 # Run NeoDepends
 # ------------------------------------------------
-def run_neodepends(project_dir: Path, db_out: Path):
+def run_neodepends(project_dir: Path, db_out: Path, language: str = "java"):
     neodepends_bin = resource_path("neodepends")
     neodepends_bin.chmod(0o755)  # ensure executable
 
@@ -25,7 +25,7 @@ def run_neodepends(project_dir: Path, db_out: Path):
         str(neodepends_bin),
         f"--input={project_dir}",
         f"--output={db_out}",
-        "-ljava",
+        f"-l{language}",
         "-D",
     ]
 
@@ -102,6 +102,11 @@ def main():
         "--dv8", action="store_true",
         help="Generate DV8-compatible outputs",
     )
+    parser.add_argument(
+        "--language", "--lang", default="java",
+        choices=["c", "cpp", "go", "java", "javascript", "kotlin", "python", "ruby", "typescript"],
+        help="Programming language to analyze (default: java). Supported: c, cpp, go, java, javascript, kotlin, python, ruby, typescript",
+    )
 
     args = parser.parse_args()
 
@@ -123,7 +128,7 @@ def main():
     start_total = time.time()
 
     # Run tools
-    run_neodepends(project_dir, db_out)
+    run_neodepends(project_dir, db_out, args.language)
     run_deicide(db_out, clustering_out, filename, args.dv8)
 
     # Summary
