@@ -121,9 +121,12 @@ def main():
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # Extract base filename for output naming
+    base_filename = filename.name  # e.g., "VideoClip.py" from "moviepy/video/VideoClip.py"
+    
     # Output file paths
     db_out = output_dir / "dependencies.db"
-    clustering_out = output_dir / "deicide_clustering.json"
+    clustering_out = output_dir / f"{base_filename}_clustering.json"
 
     start_total = time.time()
 

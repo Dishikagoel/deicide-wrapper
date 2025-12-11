@@ -1,110 +1,67 @@
-# deicide-tool  
+# Deicide Unified Tool — README
 
-Unified wrapper for running **NeoDepends** + **Deicide** in a single, streamlined workflow.
+## Overview
 
-`deicide-tool` automatically extracts dependency information from source projects using **NeoDepends**, then runs **Deicide** to generate architecture-aware clustering and DV8-compatible analysis artifacts. Supports multiple programming languages including Java, Python, JavaScript, TypeScript, C/C++, Go, Kotlin, and Ruby.
+The **Deicide Unified Tool** provides a single command-line interface that runs:
 
----
+1. **NeoDepends** — extracts detailed dependency information from source code  
+2. **Deicide** — analyzes large files and produces clustering/modularization suggestions  
+3. *(Optional)* **DV8 output** — generates DV8-compatible clustering and dependency files  
 
-## 🚀 Features
+All required components (NeoDepends binary, depends.jar, Deicide Python source) are fully bundled in this package.  
+No external installations are required beyond Python.
 
-- ✔️ Runs **NeoDepends** (Rust dependency extractor)  
-- ✔️ Runs **Deicide** (Python-based clustering + architecture analysis)  
-- ✔️ Automatically produces **multiple output formats**  
-  - `dependencies.db`  
-  - `deicide_clustering.json`  
-  - `deicide_clustering.dv8-clustering.json`  
-  - `deicide_clustering.dv8-dependency.json`  
+**Supported Languages:** Java (default), Python, JavaScript, TypeScript, C/C++, Go, Kotlin, Ruby
 
----
+## Installation
 
-## 🛠️ Installation
+### Requirements
 
-### Prerequisites
-
-- Python **3.11 or higher** (required)
+- Python **3.11+**
 - macOS or Linux
 - Java (used internally by Depends.jar)
-- Rust binary `neodepends` (included in `resources/`)
 
-### Step-by-Step Installation
-
-#### 1. Set up a Python virtual environment (recommended)
+### Install from source
 
 ```bash
-# Create a virtual environment with Python 3.11+
+# Create and activate a virtual environment (recommended)
 python3.11 -m venv venv
+source venv/bin/activate  # On macOS/Linux
 
-# Activate the virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-# venv\Scripts\activate
-```
-
-#### 2. Install deicide-tool
-
-Navigate to this wrapper project directory and install it:
-
-```bash
+# Install the package
 pip install -e .
 ```
 
-This installs the `deicide-tool` CLI command and includes the bundled Deicide package.
+This installs the CLI command:
 
-**Note:** Deicide is included in this package, so you don't need to install it separately.
-
-#### 3. Verify Installation
-
-Verify that the tool is installed correctly:
-
-```bash
-deicide-tool --help
+```
+deicide-tool
 ```
 
-You should see the help message with all available options.
-
-#### 4. Make neodepends executable (if needed)
-
-If you encounter permission errors, make the binary executable:
+### Install from wheel
 
 ```bash
-chmod +x deicide_wrapper/resources/neodepends
+pip install deicide_wrapper-0.1.0-py3-none-any.whl
 ```
 
-### System Requirements
-
-- Python **3.11 or higher** (strictly required)
-- macOS or Linux
-- Java (used internally by Depends.jar)
-- Rust binary `neodepends` (included in `resources/`)
-
----
-
-## 🧪 Usage
-
-**Important:** Make sure your virtual environment is activated before running commands:
-
-```bash
-source venv/bin/activate  # On macOS/Linux
-```
+## Usage
 
 ### Basic example (Java - default)
 
 ```bash
 deicide-tool \
-  --project "/path/to/project" \
-  --output-dir wrapper_output \
-  --filename src/Test.java
+  --project /path/to/java/project \
+  --filename path/inside/project/FileToAnalyze.java \
+  --output-dir results
 ```
 
 ### Analyze a Python project
 
 ```bash
 deicide-tool \
-  --project "/path/to/python-project" \
-  --output-dir wrapper_output \
-  --filename src/main.py \
+  --project /path/to/python/project \
+  --filename path/to/file.py \
+  --output-dir results \
   --language python
 ```
 
@@ -112,19 +69,19 @@ deicide-tool \
 
 ```bash
 deicide-tool \
-  --project "/path/to/js-project" \
-  --output-dir wrapper_output \
+  --project /path/to/js/project \
   --filename src/index.js \
+  --output-dir results \
   --language javascript
 ```
 
-### Generate DV8-compatible outputs
+### With DV8-compatible output
 
 ```bash
 deicide-tool \
-  --project "/path/to/project" \
-  --output-dir wrapper_output \
-  --filename src/Test.java \
+  --project /path/to/java/project \
+  --filename src/MyClass.java \
+  --output-dir results \
   --dv8
 ```
 
@@ -132,54 +89,69 @@ deicide-tool \
 
 The `--language` (or `--lang`) flag accepts: `c`, `cpp`, `go`, `java` (default), `javascript`, `kotlin`, `python`, `ruby`, `typescript`
 
----
-
-## 📁 Output Files
-
-Running the tool generates:
+## Output Files
 
 | File | Description |
 |------|-------------|
-| `dependencies.db` | Extracted dependency graph (NeoDepends) |
-| `deicide_clustering.json` | Standard Deicide clustering output |
-| `deicide_clustering.dv8-clustering.json` | DV8 clustering format |
-| `deicide_clustering.dv8-dependency.json` | DV8 dependency file |
+| `dependencies.db` | Dependency database produced by NeoDepends |
+| `deicide_clustering.json` | Main Deicide clustering output |
+| `deicide_clustering.dv8-clustering.json` | DV8 clustering file (if `--dv8`) |
+| `deicide_clustering.dv8-dependency.json` | DV8 dependency file (if `--dv8`) |
 
-All files are placed inside the specified `output-dir`.
+If the output directory already exists, it will be replaced.
 
----
+## Example Run
 
-## 🧩 How It Works
+```bash
+deicide-tool \
+  --project "/Users/example/Survey3" \
+  --filename src/Test.java \
+  --output-dir out_test \
+  --dv8
+```
 
-### **Step 1 — NeoDepends**
-Parses source files for the specified language, resolves bindings, builds dependency matrices, and outputs a `.db` file.
+Sample output:
 
-### **Step 2 — Deicide**
-Consumes the `.db` file and performs clustering + architecture analysis on the specified filename.
+```
+============================================================
+ Deicide Suite — Unified NeoDepends + Deicide Runner
+============================================================
+[1/3] Running NeoDepends…
+✔ NeoDepends complete (2.39s): out_test/dependencies.db
 
-### **Step 3 — Output Summary**
-Displays all generated files and total runtime.
+[2/3] Running Deicide (direct import)…
+✔ Deicide complete (46.67s): out_test/deicide_clustering.json
 
----
+[3/3] Output Summary
+✔ Files Generated:
+   • deicide_clustering.json
+   • deicide_clustering.dv8-clustering.json
+   • deicide_clustering.dv8-dependency.json
+   • dependencies.db
 
-## 🟥 Troubleshooting
+🎉 Analysis complete in 49.06s!
+📁 Outputs saved in: out_test
+============================================================
+```
+
+## Troubleshooting
 
 ### **"No module named 'deicide'"**
 Make sure the wrapper package is properly installed with your virtual environment activated:
 
 ```bash
-source venv/bin/activate  # Activate virtual environment
-pip install -e .  # Reinstall the wrapper (Deicide is bundled)
+source venv/bin/activate
+pip install -e .
 ```
 
 ### **"Package requires Python >= 3.11"**
-Ensure you're using Python 3.11 or higher. Check your Python version:
+Ensure you're using Python 3.11 or higher:
 
 ```bash
 python3 --version
 ```
 
-If needed, create a new virtual environment with Python 3.11+:
+If needed, create a new virtual environment:
 
 ```bash
 python3.11 -m venv venv
@@ -201,10 +173,12 @@ source venv/bin/activate
 pip install -e .
 ```
 
-### **Output directory exists**
-The wrapper automatically overwrites `output-dir` on each run.
+## Notes
 
----
+- The tool includes its own NeoDepends binary and depends.jar.  
+- The Deicide engine is shipped directly within the package.  
+- Temporary SQLite WAL files (`.db-wal`, `.db-shm`) may appear during execution but are safe and may be cleaned automatically.
 
-## 📜 License
+## License
+
 Internal academic research tool.
