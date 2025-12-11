@@ -20,31 +20,61 @@ Unified wrapper for running **NeoDepends** + **Deicide** in a single, streamline
 
 ## 🛠️ Installation
 
-### 1. Install Deicide (Python package)
+### Prerequisites
+
+- Python **3.11 or higher** (required)
+- macOS or Linux
+- Java (used internally by Depends.jar)
+- Rust binary `neodepends` (included in `resources/`)
+
+### Step-by-Step Installation
+
+#### 1. Set up a Python virtual environment (recommended)
 
 ```bash
-pip install -e /path/to/deicide
+# Create a virtual environment with Python 3.11+
+python3.11 -m venv venv
+
+# Activate the virtual environment
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+# venv\Scripts\activate
 ```
 
-You must use **Python ≥ 3.11**.
+#### 2. Install deicide-tool
 
-### 2. Install deicide-tool
-
-Inside this wrapper project:
+Navigate to this wrapper project directory and install it:
 
 ```bash
 pip install -e .
 ```
 
-This installs the CLI:
+This installs the `deicide-tool` CLI command and includes the bundled Deicide package.
 
+**Note:** Deicide is included in this package, so you don't need to install it separately.
+
+#### 3. Verify Installation
+
+Verify that the tool is installed correctly:
+
+```bash
+deicide-tool --help
 ```
-deicide-tool
+
+You should see the help message with all available options.
+
+#### 4. Make neodepends executable (if needed)
+
+If you encounter permission errors, make the binary executable:
+
+```bash
+chmod +x deicide_wrapper/resources/neodepends
 ```
 
 ### System Requirements
 
-- Python **3.11 or higher**
+- Python **3.11 or higher** (strictly required)
 - macOS or Linux
 - Java (used internally by Depends.jar)
 - Rust binary `neodepends` (included in `resources/`)
@@ -52,6 +82,12 @@ deicide-tool
 ---
 
 ## 🧪 Usage
+
+**Important:** Make sure your virtual environment is activated before running commands:
+
+```bash
+source venv/bin/activate  # On macOS/Linux
+```
 
 ### Basic example (Java - default)
 
@@ -128,18 +164,41 @@ Displays all generated files and total runtime.
 
 ## 🟥 Troubleshooting
 
-### **“No module named 'deicide'”**
-Install Deicide:
+### **"No module named 'deicide'"**
+Make sure the wrapper package is properly installed with your virtual environment activated:
 
 ```bash
-pip install -e /path/to/deicide
+source venv/bin/activate  # Activate virtual environment
+pip install -e .  # Reinstall the wrapper (Deicide is bundled)
 ```
 
-### **“neodepends: permission denied”**
-Run:
+### **"Package requires Python >= 3.11"**
+Ensure you're using Python 3.11 or higher. Check your Python version:
+
+```bash
+python3 --version
+```
+
+If needed, create a new virtual environment with Python 3.11+:
+
+```bash
+python3.11 -m venv venv
+source venv/bin/activate
+```
+
+### **"neodepends: permission denied"**
+Make the binary executable:
 
 ```bash
 chmod +x deicide_wrapper/resources/neodepends
+```
+
+### **"unrecognized arguments: --language"**
+Reinstall the package after code changes:
+
+```bash
+source venv/bin/activate
+pip install -e .
 ```
 
 ### **Output directory exists**
